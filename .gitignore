@@ -1,0 +1,32 @@
+# Build artifacts
+target/
+build/
+webshot/build/
+spike/target/
+*.apk
+*.apk.idsig
+*.keystore
+
+# SDK (vendored, too large)
+webshot/sdk/
+
+# Prebuilt binaries
+spike/qjs-spike.aarch64-android
+
+# Environment
+.env
+*.tmp
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Cargo lock for binary crates (keep for workspace, ignore for spike)
+spike/Cargo.lock

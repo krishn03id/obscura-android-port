@@ -1,0 +1,27 @@
+Captured 2026-07-07 on Amazon Linux 2023 x86_64 host.
+
+=== BUILD (cross, NDK r27c, rquickjs 0.12.1 with `bindgen` feature) ===
+$ cargo build --release --target aarch64-linux-android
+   Compiling bindgen v0.72.1
+   Compiling rquickjs-sys v0.12.1
+   Compiling rquickjs-core v0.12.1
+   Compiling rquickjs v0.12.1
+   Compiling qjs-spike v0.1.0
+    Finished `release` profile [optimized] target(s) in 31.98s
+$ file target/aarch64-linux-android/release/qjs-spike
+ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV),
+dynamically linked, interpreter /system/bin/linker64, not stripped
+(1.7M)
+
+=== RUN (static variant under qemu-aarch64-static 7.2.0) ===
+$ RUSTFLAGS="-C target-feature=+crt-static" cargo build --release --target aarch64-linux-android
+$ qemu-aarch64-static target/aarch64-linux-android/release/qjs-spike
+[spike] 1 + 1 = 2
+[spike] optional-chaining/?? = 42
+[spike] 2n ** 64n = 18446744073709551616
+[spike] typeof globalThis = object
+[spike] OK
+=== qemu exit code: 0 ===
+
+NOTE: this emulated-aarch64 scenario is exactly where rusty_v8 (V8) segfaults
+(SIGSEGV in a V8 worker thread, denoland/rusty_v8#270). QuickJS-NG runs clean.

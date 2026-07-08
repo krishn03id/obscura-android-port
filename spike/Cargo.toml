@@ -1,0 +1,13 @@
+[package]
+name = "qjs-spike"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "qjs-spike"
+path = "src/main.rs"
+
+[dependencies]
+# rquickjs 0.12.0 -> quickjs-ng. `bindgen` generates FFI bindings at build time
+# for targets without pre-generated bindings (e.g. *-linux-android).
+rquickjs = { version = "0.12.0", features = ["bindgen"] }

@@ -1,0 +1,35 @@
+# Drop-in replacement Cargo.toml for crates/obscura-js.
+# Removes deno_core; adds rquickjs. Keep the rest of the workspace deps as-is.
+[package]
+name = "obscura-js"
+version = "0.1.9"
+edition = "2021"
+
+[dependencies]
+# --- engine swap ---
+rquickjs = { version = "0.12.1", features = ["full-async", "bindgen", "macro"] }
+# `bindgen` = generate FFI for android/other targets w/o prebuilt bindings (needs libclang).
+# `full-async` = AsyncRuntime/AsyncContext for op_fetch_url.
+# `macro` = #[rquickjs::class]/#[rquickjs::function] helpers.
+
+# --- kept from original obscura-js (adjust to match the real Cargo.toml) ---
+tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros", "sync", "time"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tracing = "0.1"
+url = "2"
+encoding_rs = "0.8"
+# crypto for subtle ops (match whatever the original used: ring / aes-gcm / hmac / sha2 / pbkdf2 / hkdf)
+sha2 = "0.10"
+hmac = "0.12"
+aes-gcm = "0.10"
+getrandom = "0.2"
+
+# html5ever etc. stay as in the original crate.
+
+[lib]
+# For the Android app build (Phase 3) add "cdylib". "rlib" keeps it usable by the workspace.
+crate-type = ["rlib"]
+
+# IMPORTANT: preserve Obscura's panic discipline. If the workspace sets panic="unwind"
+# for the op catch_unwind protocol, keep it; ops here also convert Err -> thrown JS error.
