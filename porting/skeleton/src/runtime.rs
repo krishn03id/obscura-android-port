@@ -39,7 +39,15 @@ impl ObscuraRuntime {
     pub fn exec(&self, code: &str) -> rquickjs::Result<()> {
         self.ctx.with(|ctx| ctx.eval::<(), _>(code))?;
         while self.rt.is_job_pending() {
-            self.rt.execute_pending_job()?;
+            if let Err(job_err) = self.rt.execute_pending_job() {
+                return Err(job_err.0.with(|ctx| {
+                    let caught = ctx.catch();
+                    rquickjs::Error::new_from_js_message(
+                        "job", "exception",
+                        format!("pending job threw: {caught:?}"),
+                    )
+                }));
+            }
         }
         Ok(())
     }

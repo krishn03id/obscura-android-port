@@ -3,6 +3,9 @@ target/
 build/
 webshot/build/
 spike/target/
+crates/*/target/
+crates/*/Cargo.lock
+Cargo.lock
 *.apk
 *.apk.idsig
 *.keystore
